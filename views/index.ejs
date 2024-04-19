@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <form>
+      <input type="text" name="message" />
+      <input type="submit" value="send" />
+    </form>
+
+    <ul id="messages">
+      
+    </ul>
+    
+    <script>
+      const source = new EventSource("/events");
+      source.addEventListener('message', e => {
+        const ul = document.querySelector('#messages');
+        const newMessage = document.createElement('li');
+        newMessage.textContent = e.data;
+        ul.appendChild(newMessage);         
+      });
+
+      const form = document.querySelector('form');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        await fetch('/message', {
+          method: 'POST',
+          body: data,
+        })
+      })
+
+    </script>
+  </body>
+</html>
